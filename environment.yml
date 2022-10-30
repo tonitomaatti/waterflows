@@ -1,8 +1,7 @@
-name: C:\Users\turpeint\Desktop\waterflow\waterflows\.conda_env
+name: .conda_env
 channels:
   - conda-forge
-  - defaults
-  - r
+  - nodefaults
 dependencies:
   - altair=4.2.0=pyhd8ed1ab_1
   - arrow-cpp=8.0.0=py310h38b8b19_0
