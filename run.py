@@ -18,12 +18,13 @@ folium.PolyLine(points, color="red", weight=3).add_to(m)
 
 #Add route markers
 df = pd.read_csv("Waterflow Data.csv")
-coords = df[["Route Start GPS N", "Route Start GPS E"]].rename(columns={"Route Start GPS N": "N", "Route Start GPS E": "E"}).to_dict("records")
+coords = df[["Route Start GPS N", "Route Start GPS E", "Route Start"]].rename(columns={"Route Start GPS N": "N", "Route Start GPS E": "E"}).to_dict("records")
 
 for coord in coords:
+    route_start_name = coord.pop("Route Start", None)
     coords_wgs84 = coordinates.ETRSTM35FINxy_to_WGS84lalo(coord)
     folium.Marker(
-        [coords_wgs84["La"], coords_wgs84["Lo"]]
+        [coords_wgs84["La"], coords_wgs84["Lo"]], popup=None, tooltip=route_start_name
     ).add_to(m)
 
 # call to render Folium map in Streamlit
