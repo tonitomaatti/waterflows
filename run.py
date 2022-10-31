@@ -30,9 +30,11 @@ m = folium.Map([60.30246404560092, 24.85931396484375], zoom_start=9, tiles=map_t
 #points = [(60.181733310424505, 24.927388429641727), (60.18644904112918, 24.927141666412357)]
 #folium.PolyLine(points, color="red", weight=3).add_to(m)
 Draw(export=True).add_to(m)
-with open("Data/Routepoints/routepoints_1.geojson") as f:
-    routepoints_json = json.load(f)
-folium.GeoJson(routepoints_json, style_function= lambda x: {"color":"#CC3636", "weight":"5"}).add_to(m)
+
+for i in range(1,6):
+    with open("Data/Routepoints/routepoints_" + str(i)+ ".geojson") as f:
+        routepoints_json = json.load(f)
+    folium.GeoJson(routepoints_json, style_function= lambda x: {"color":"#CC3636", "weight":"5"}).add_to(m)
 
 #Add all coordinates together
 #routepoints = []
