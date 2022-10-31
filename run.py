@@ -4,6 +4,7 @@ from streamlit_folium import st_folium
 import folium
 import pandas as pd
 import coordinates
+from folium.plugins import Draw
 
 st.title('WaterFlows')
 
@@ -13,22 +14,31 @@ with st.sidebar:
 m = folium.Map([60.249999, 24.499998], zoom_start=10)
 
 #Draw Lines
-points = [(60.181733310424505, 24.927388429641727), (60.18644904112918, 24.927141666412357)]
-folium.PolyLine(points, color="red", weight=3).add_to(m)
+#points = [(60.181733310424505, 24.927388429641727), (60.18644904112918, 24.927141666412357)]
+#folium.PolyLine(points, color="red", weight=3).add_to(m)
+#Draw(export=True).add_to(m)
 
 #Add route markers
 df = pd.read_csv("Waterflow Data.csv")
-coords = df[["Route Start GPS N", "Route Start GPS E", "Route Start"]].rename(columns={"Route Start GPS N": "N", "Route Start GPS E": "E"}).to_dict("records")
+start_coords = df[["Route Start GPS N", "Route Start GPS E", "Route Start"]].rename(
+    columns={"Route Start GPS N": "N", "Route Start GPS E": "E", "Route Start": "Name"}
+    ).to_dict("records")
+
+end_coords = df[["Route End GPS N", "Route End GPS E", "Route End"]].rename(
+    columns={"Route End GPS N": "N", "Route End GPS E": "E", "Route End": "Name"}
+    ).to_dict("records")
+
+coords = start_coords + end_coords
 
 for coord in coords:
-    route_start_name = coord.pop("Route Start", None)
+    route_name = coord.pop("Name", None)
     coords_wgs84 = coordinates.ETRSTM35FINxy_to_WGS84lalo(coord)
     folium.Marker(
-        [coords_wgs84["La"], coords_wgs84["Lo"]], popup=None, tooltip=route_start_name
+        [coords_wgs84["La"], coords_wgs84["Lo"]], popup=None, tooltip=route_name
     ).add_to(m)
 
 # call to render Folium map in Streamlit
-st_data = st_folium(m, width = 800)
+st_data = st_folium(m, width = 1200, height = 1000)
 
 st.write(st_data)
 
