@@ -41,17 +41,24 @@ end_coords = df[["Route End GPS N", "Route End GPS E", "Route End"]].rename(
 
 coords = start_coords + end_coords
 
+#icon = folium.map.Icon(color='red', icon_color='white', icon='info-sign', angle=0, prefix='glyphicon')
+
 for coord in coords:
     route_name = coord.pop("Name", None)
     coords_wgs84 = coordinates.ETRSTM35FINxy_to_WGS84lalo(coord)
     folium.Marker(
-        [coords_wgs84["La"], coords_wgs84["Lo"]], popup=None, tooltip=route_name
+        [coords_wgs84["La"], coords_wgs84["Lo"]],
+        popup=None,
+        tooltip=route_name,
+        icon=folium.map.Icon(
+            color='blue', icon_color='white', icon='info-sign', angle=0, prefix='glyphicon'
+            )
     ).add_to(m)
 
 # call to render Folium map in Streamlit
-st_data = st_folium(m, width = 1200, height = 1000)
+st_data = st_folium(m)
 
-st.write(st_data)
+#st.write(st_data)
 
 #st.write("Picked Date: ", date_picker)
 #st.write("Conda Forge version")
