@@ -80,6 +80,11 @@ for coord in coords:
 # call to render Folium map in Streamlit
 st_data = st_folium(m)
 
+st.write("Predicted Waterflow: " + str(day_prediction))
+st.write("Picked Date: " + str(date_picker))
+
+st.write(waterflow_df[["River","Route Start","Route End", "Treshold Easy", "Treshold Doable"]][0:5])
+
 #if st_data["last_object_clicked"]:
 #    st.write("CLICKED OBJECT")
 
