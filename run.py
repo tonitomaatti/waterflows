@@ -7,12 +7,24 @@ import coordinates
 from folium.plugins import Draw
 import json
 
-st.title('WaterFlows')
+
 
 with st.sidebar:
+    st.title('WaterFlows')
     date_picker = st.date_input("Select Date", min_value=datetime.date.today(), max_value=datetime.date.today()+datetime.timedelta(days=365))
+    toggle_map = st.radio(
+        "Map Type",
+        ('Color', 'Grey'),
+        index=1,
+        horizontal=True
+    )
 
-m = folium.Map([60.30246404560092, 24.85931396484375], zoom_start=9, tiles="CartoDB Positron")
+if toggle_map == "Color":
+    map_tiles = "OpenStreetMap"
+else:
+    map_tiles = "CartoDB Positron"
+
+m = folium.Map([60.30246404560092, 24.85931396484375], zoom_start=9, tiles=map_tiles)
 
 #Draw Lines
 #points = [(60.181733310424505, 24.927388429641727), (60.18644904112918, 24.927141666412357)]
@@ -20,13 +32,14 @@ m = folium.Map([60.30246404560092, 24.85931396484375], zoom_start=9, tiles="Cart
 Draw(export=True).add_to(m)
 with open("Data/Routepoints/routepoints_1.geojson") as f:
     routepoints_json = json.load(f)
+folium.GeoJson(routepoints_json, style_function= lambda x: {"color":"#CC3636", "weight":"5"}).add_to(m)
 
 #Add all coordinates together
-routepoints = []
-for points in routepoints_json["features"]:
-    routepoints = routepoints + [(point[1], point[0]) for point in points["geometry"]["coordinates"]]
-
-folium.PolyLine(routepoints, color="#CC3636", weight=5).add_to(m)
+#routepoints = []
+#for points in routepoints_json["features"]:
+#    routepoints = routepoints + [(point[1], point[0]) for point in points["geometry"]["coordinates"]]
+#
+#folium.PolyLine(routepoints, color="#CC3636", weight=5).add_to(m)
 
 
 #Add route markers
@@ -56,9 +69,9 @@ for coord in coords:
     #).add_to(m)
     folium.vector_layers.Circle(
         location=(coords_wgs84["La"], coords_wgs84["Lo"]),
-        radius=30,
+        radius=1,
         popup=None,
-        tooltip=None,
+        tooltip=route_name,
         weight=5,
         color="black",
         fill_color="purple",
